@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { T, INIT_GOALS } from './data/constants';
+import { T } from './data/constants';
 import BottomNav from './components/BottomNav';
 import Dashboard from './components/Dashboard';
 import Goals from './components/Goals';
@@ -25,6 +25,12 @@ import {
 } from './utils/database';
 
 // Seed data for initial database population
+const SEED_GOALS = [
+  { id:1, name:'Viaje a Bariloche', emoji:'🏔️', target:800000, current:320000, color:'#818cf8' },
+  { id:2, name:'Smart TV nueva', emoji:'📺', target:250000, current:190000, color:'#f472b6' },
+  { id:3, name:'Fondo emergencias', emoji:'🛡️', target:500000, current:85000, color:'#fbbf24' },
+];
+
 const SEED_USERS = [
   { key: 'juan', name: 'Juan', initial: 'J', color: '#818cf8' },
   { key: 'mile', name: 'Mile', initial: 'M', color: '#f472b6' },
@@ -82,7 +88,7 @@ const App = () => {
     async function boot() {
       try {
         await initDatabase();
-        await seedData(SEED_USERS, SEED_CATEGORIES, INIT_GOALS, SEED_SETTINGS, SEED_BUDGETS);
+        await seedData(SEED_USERS, SEED_CATEGORIES, SEED_GOALS, SEED_SETTINGS, SEED_BUDGETS);
 
         const currentMonth = getCurrentMonth();
         const [txs, gols, usrs, cats, settgs, bdgt] = await Promise.all([
@@ -107,7 +113,7 @@ const App = () => {
         // Fallback a mocks si SQLite falla (ej. en navegador sin Capacitor)
         if (mounted) {
           setFeed([]);
-          setGoals(INIT_GOALS);
+          setGoals(SEED_GOALS);
           setUsers(SEED_USERS);
           setCategories(SEED_CATEGORIES);
           setSettings({
