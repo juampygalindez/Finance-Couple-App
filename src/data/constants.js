@@ -19,9 +19,9 @@ export const T = {
   blueDim:  '#172554',
 };
 
-// DEPRECATED: These exports are maintained for backward compatibility during PR 1.
-// They will be removed in PR 2 when components are updated to use database APIs.
-// DO NOT use these in new code.
+// DEPRECATED: USERS and CATEGORIES are kept for PR 2 because components still import them.
+// They will be removed in PR 3 when components are updated to receive these via props.
+// App.jsx now passes users/categories as props; components need to be updated to use them.
 export const USERS = {
   juan: { name: 'Juan', avatar: 'J', color: '#818cf8' },
   mile: { name: 'Mile', avatar: 'M', color: '#f472b6' },
@@ -35,15 +35,8 @@ export const CATEGORIES = [
   {cat:'Transporte',emoji:'🚇'}, {cat:'Otro',emoji:'📦'},
 ];
 
-export const INIT_FEED = [
-  { id:1, user:'mile', emoji:'🛒', cat:'Supermercado', desc:'Coto — compras semana', amount:18400, shared:true, ts: new Date(Date.now()-1000*60*30) },
-  { id:2, user:'juan', emoji:'🍕', cat:'Delivery', desc:'Pedidos Ya — pizza noche', amount:9800, shared:true, ts: new Date(Date.now()-1000*60*60*3) },
-  { id:3, user:'mile', emoji:'💊', cat:'Farmacia', desc:'Farmacity', amount:4200, shared:false, ts: new Date(Date.now()-1000*60*60*8) },
-  { id:4, user:'juan', emoji:'⛽', cat:'Nafta', desc:'Shell autopista', amount:22000, shared:true, ts: new Date(Date.now()-1000*60*60*26) },
-  { id:5, user:'mile', emoji:'☕', cat:'Café', desc:'Starbucks Palermo', amount:3600, shared:false, ts: new Date(Date.now()-1000*60*60*30) },
-  { id:6, user:'juan', emoji:'🏠', cat:'Alquiler', desc:'Alquiler junio', amount:180000, shared:true, ts: new Date(Date.now()-1000*60*60*48) },
-];
-
+// INIT_GOALS is temporarily kept for PR 2 seeding.
+// It will be removed in PR 3 when goals are fully migrated to database-driven.
 export const INIT_GOALS = [
   { id:1, name:'Viaje a Bariloche', emoji:'🏔️', target:800000, current:320000, color:'#818cf8' },
   { id:2, name:'Smart TV nueva', emoji:'📺', target:250000, current:190000, color:'#f472b6' },
