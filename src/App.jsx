@@ -221,7 +221,7 @@ const App = () => {
     home: <Dashboard feed={feed} setFeed={setFeed} setShowAdd={setShowAdd} setDetailTx={setDetailTx} users={users} budget={budget} onBudgetChange={handleBudgetChange} />,
     goals: <Goals goals={goals} setGoals={setGoals} onUpdateGoal={handleUpdateGoals} />,
     stats: <Stats feed={feed} users={users} categories={categories} />,
-    settings: <Settings users={users} categories={categories} settings={settings} onSettingChange={handleSettingChange} />,
+    settings: <Settings users={users} categories={categories} settings={settings} onSettingChange={handleSettingChange} onBudgetChange={handleBudgetChange} />,
   }[tab];
 
   return (
