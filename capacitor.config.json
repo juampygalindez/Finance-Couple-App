@@ -1,0 +1,8 @@
+{
+  "appId": "com.parejas.finance",
+  "appName": "Pareja$",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

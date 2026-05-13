@@ -1,3 +1,18 @@
+# Dependencies
+node_modules/
+dist/
+
+# Vite
+.vite/
+
+# Capacitor
+android/app/build/
+ios/App/build/
+ios/App/Pods/
+ios/App/Podfile.lock
+ios/App/App/public/
+android/app/src/main/assets/public/
+
 # Gradle files
 .gradle/
 build/
@@ -32,3 +47,11 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcworkspace
+DerivedData/

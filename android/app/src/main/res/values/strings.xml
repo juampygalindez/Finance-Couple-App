@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Pareja$</string>
+    <string name="title_activity_main">Pareja$</string>
+    <string name="package_name">com.parejas.finance</string>
+    <string name="custom_url_scheme">com.parejas.finance</string>
+</resources>
