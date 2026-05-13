@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { T, CATEGORIES, USERS } from '../data/constants';
+import { T } from '../data/constants';
 import { fmt } from '../utils/format';
 import Icon from './Icon';
 
-const AddModal = ({ onClose, onAdd }) => {
+const AddModal = ({ onClose, onAdd, users, categories }) => {
   const [step, setStep] = useState('pick'); // pick | manual | voice | photo
-  const [form, setForm] = useState({ desc:'', amount:'', cat:'Supermercado', user:'juan', shared:true });
+  const [form, setForm] = useState({ 
+    desc:'', 
+    amount:'', 
+    cat: categories[0]?.name || 'Supermercado', 
+    user: users[0]?.key || 'juan', 
+    shared:true 
+  });
   const [aiLoading, setAiLoading] = useState(false);
   const [voiceText, setVoiceText] = useState('');
 
@@ -14,7 +20,7 @@ const AddModal = ({ onClose, onAdd }) => {
     onAdd({
       id: Date.now(), user: form.user, shared: form.shared,
       cat: form.cat, desc: form.desc, amount: +form.amount.replace(/\./g,''),
-      emoji: CATEGORIES.find(c=>c.cat===form.cat)?.emoji || '📦',
+      emoji: categories.find(c=>c.name===form.cat)?.emoji || '📦',
       ts: new Date(),
     });
     onClose();
@@ -97,13 +103,13 @@ const AddModal = ({ onClose, onAdd }) => {
           {/* Category */}
           <p style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:.6, textTransform:'uppercase', marginBottom:8 }}>Categoría</p>
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:14 }}>
-            {CATEGORIES.slice(0,8).map(c => (
-              <button key={c.cat} onClick={()=>setForm(f=>({...f,cat:c.cat}))} style={{
-                background: form.cat===c.cat ? T.accentDim : T.card,
-                border:`1px solid ${form.cat===c.cat ? T.accent+'88' : T.border}`,
+            {categories.slice(0,8).map(c => (
+              <button key={c.name} onClick={()=>setForm(f=>({...f,cat:c.name}))} style={{
+                background: form.cat===c.name ? T.accentDim : T.card,
+                border:`1px solid ${form.cat===c.name ? T.accent+'88' : T.border}`,
                 borderRadius:10, padding:'6px 10px', cursor:'pointer',
-                color: form.cat===c.cat ? T.accent : T.sub, fontSize:12, fontWeight:500,
-              }}>{c.emoji} {c.cat}</button>
+                color: form.cat===c.name ? T.accent : T.sub, fontSize:12, fontWeight:500,
+              }}>{c.emoji} {c.name}</button>
             ))}
           </div>
 
@@ -112,14 +118,14 @@ const AddModal = ({ onClose, onAdd }) => {
             <div style={{ flex:1 }}>
               <p style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:.6, textTransform:'uppercase', marginBottom:8 }}>¿Quién pagó?</p>
               <div style={{ display:'flex', gap:6 }}>
-                {['juan','mile'].map(u=>(
-                  <button key={u} onClick={()=>setForm(f=>({...f,user:u}))} style={{
+                {users.map(u=>(
+                  <button key={u.key} onClick={()=>setForm(f=>({...f,user:u.key}))} style={{
                     flex:1, padding:'8px', borderRadius:11,
-                    background: form.user===u ? USERS[u].color+'22' : T.card,
-                    border:`1px solid ${form.user===u ? USERS[u].color+'66' : T.border}`,
-                    color: form.user===u ? USERS[u].color : T.sub,
+                    background: form.user===u.key ? u.color+'22' : T.card,
+                    border:`1px solid ${form.user===u.key ? u.color+'66' : T.border}`,
+                    color: form.user===u.key ? u.color : T.sub,
                     cursor:'pointer', fontSize:13, fontWeight:600,
-                  }}>{USERS[u].name}</button>
+                  }}>{u.name}</button>
                 ))}
               </div>
             </div>
