@@ -1,27 +1,36 @@
 import React from 'react';
-import { T, USERS } from '../data/constants';
+import { T } from '../data/constants';
 import { fmt, timeAgo } from '../utils/format';
 import Icon from './Icon';
-import Avatar from './Avatar';
 
-const Dashboard = ({ feed, setFeed, setShowAdd, setDetailTx }) => {
+const Dashboard = ({ users, budget, feed, setFeed, setShowAdd, setDetailTx }) => {
+  // Convert users array to lookup object for easy access
+  const usersMap = React.useMemo(() => {
+    return Object.fromEntries(users.map(u => [u.key, u]));
+  }, [users]);
+
   const juanPaid = feed.filter(f=>f.user==='juan'&&f.shared).reduce((a,b)=>a+b.amount,0);
   const milePaid = feed.filter(f=>f.user==='mile'&&f.shared).reduce((a,b)=>a+b.amount,0);
   const diff = juanPaid - milePaid;
   const total = juanPaid + milePaid;
-  const budget = 500000;
+  const budgetAmount = budget ?? 500000;
+
+  // Dynamic month label
+  const monthLabel = new Date().toLocaleString('es-AR', { month: 'long', year: 'numeric' });
+  // Capitalize first letter
+  const capitalizedMonthLabel = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
 
   return (
     <div style={{ flex:1, overflowY:'auto', paddingBottom:90 }}>
       {/* HEADER */}
       <div style={{ padding:'16px 20px 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div>
-          <p style={{ fontSize:11, color:T.muted, letterSpacing:.8, textTransform:'uppercase', fontWeight:600 }}>Abril 2026</p>
+          <p style={{ fontSize:11, color:T.muted, letterSpacing:.8, textTransform:'uppercase', fontWeight:600 }}>{capitalizedMonthLabel}</p>
           <p style={{ fontSize:20, fontWeight:700, color:T.text, marginTop:2 }}>Pareja$</p>
         </div>
         <button style={{ background:'none', border:`1px solid ${T.border}`, borderRadius:10, padding:'6px 10px', color:T.sub, fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
           <Icon name="bell" size={14} color={T.sub}/>
-          2
+          {feed.length}
         </button>
       </div>
 
@@ -42,23 +51,23 @@ const Dashboard = ({ feed, setFeed, setShowAdd, setDetailTx }) => {
         <div style={{ marginTop:16, display:'flex', gap:8 }}>
           <div style={{ flex:1, background:'#ffffff08', borderRadius:12, padding:'10px 12px' }}>
             <p style={{ fontSize:10, color:T.muted, marginBottom:4, fontWeight:600 }}>Juan pagó</p>
-            <p style={{ fontSize:16, fontWeight:700, color:'#818cf8' }}>{fmt(juanPaid)}</p>
+            <p style={{ fontSize:16, fontWeight:700, color:usersMap.juan?.color || '#818cf8' }}>{fmt(juanPaid)}</p>
           </div>
           <div style={{ flex:1, background:'#ffffff08', borderRadius:12, padding:'10px 12px' }}>
             <p style={{ fontSize:10, color:T.muted, marginBottom:4, fontWeight:600 }}>Mile pagó</p>
-            <p style={{ fontSize:16, fontWeight:700, color:'#f472b6' }}>{fmt(milePaid)}</p>
+            <p style={{ fontSize:16, fontWeight:700, color:usersMap.mile?.color || '#f472b6' }}>{fmt(milePaid)}</p>
           </div>
         </div>
         {/* budget bar */}
         <div style={{ marginTop:14 }}>
           <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
             <span style={{ fontSize:11, color:T.sub }}>Presupuesto mensual</span>
-            <span style={{ fontSize:11, color:T.sub }}>{Math.round(total/budget*100)}% — {fmt(total)} de {fmt(budget)}</span>
+            <span style={{ fontSize:11, color:T.sub }}>{Math.round(total/budgetAmount*100)}% — {fmt(total)} de {fmt(budgetAmount)}</span>
           </div>
           <div style={{ height:5, background:'#ffffff10', borderRadius:99, overflow:'hidden' }}>
-            <div style={{ height:'100%', width:`${Math.min(100,total/budget*100)}%`, background: total/budget > .8 ? T.red : T.accent, borderRadius:99, transition:'width .6s' }}/>
+            <div style={{ height:'100%', width:`${Math.min(100,total/budgetAmount*100)}%`, background: total/budgetAmount > .8 ? T.red : T.accent, borderRadius:99, transition:'width .6s' }}/>
           </div>
-          {total/budget > .8 && <p style={{ fontSize:10, color:T.red, marginTop:5 }}>⚠ Ya gastaron el {Math.round(total/budget*100)}% del presupuesto</p>}
+          {total/budgetAmount > .8 && <p style={{ fontSize:10, color:T.red, marginTop:5 }}>⚠ Ya gastaron el {Math.round(total/budgetAmount*100)}% del presupuesto</p>}
         </div>
       </div>
 
@@ -93,8 +102,14 @@ const Dashboard = ({ feed, setFeed, setShowAdd, setDetailTx }) => {
                 {tx.shared && <span style={{ fontSize:9, background:T.accentDim, color:T.accentLt, borderRadius:4, padding:'2px 5px', fontWeight:600, letterSpacing:.4, flexShrink:0 }}>COMPARTIDO</span>}
               </div>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginTop:3 }}>
-                <Avatar user={tx.user} size={16}/>
-                <span style={{ fontSize:11, color:T.sub }}>{USERS[tx.user].name} · {timeAgo(tx.ts)}</span>
+                <div style={{
+                  width: 16, height: 16, borderRadius: '50%',
+                  background: (usersMap[tx.user]?.color || '#999') + '22',
+                  border: `1.5px solid ${(usersMap[tx.user]?.color || '#999')}44`,
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                  fontSize: 6, color: usersMap[tx.user]?.color || '#999', fontWeight: 600, flexShrink: 0,
+                }}>{usersMap[tx.user]?.initial || '?'}</div>
+                <span style={{ fontSize:11, color:T.sub }}>{usersMap[tx.user]?.name || tx.user} · {timeAgo(tx.ts)}</span>
               </div>
             </div>
             <p style={{ fontSize:15, fontWeight:600, color:T.text, flexShrink:0 }}>{fmt(tx.amount)}</p>
